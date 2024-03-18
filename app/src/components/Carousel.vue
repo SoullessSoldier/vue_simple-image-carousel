@@ -1,51 +1,20 @@
 <template>
-  <!-- <section class="section" id="app">
-    <div class="columns">
-      <div class="column is-4">
-        <div class="card">
-          <div class="card-content">
-            <div class="card-carousel">
-              <div class="card-img">
-                <img :src="currentImage" alt="" />
-                <div class="actions">
-                  <span @click="prevImage" class="prev">
-                    <i class="fas fa-chevron-left"></i>
-                  </span>
-                  <span @click="nextImage" class="next">
-                    <i class="fas fa-chevron-right"></i>
-                  </span>
-                </div>
-              </div>
-              <div class="thumbnails">
-                <div
-                  v-for="(image, index) in images"
-                  :key="image.id"
-                  :class="[
-                    'thumbnail-image',
-                    activeImage == index ? 'active' : '',
-                  ]"
-                  @click="activateImage(index)"
-                >
-                  <img :src="image.thumb" />
-                </div>
-              </div>
-            </div>
-            <p>Card description.</p>
-          </div>
+  <div class="card-carousel">
+    <div
+      class="image-wrapper"
+      @mouseover="stopTimer"
+      @mouseleave="restartTimer"
+    >
+      <div class="card-img">
+        <div class="progressbar" v-if="autoSlideInterval && showProgressBar">
+          <div :style="{ width: progressBar + '%' }"></div>
         </div>
+        <img class="card-img-image" :src="currentImage" alt="" />
       </div>
-    </div>
-  </section> -->
-  <div class="card-carousel" @mouseover="stopTimer" @mouseleave="restartTimer">
-    <div class="progressbar" v-if="autoSlideInterval && showProgressBar">
-      <div :style="{ width: progressBar + '%' }"></div>
-    </div>
-    <div class="card-img">
-      <img :src="currentImage" alt="" />
-      <div class="actions">
-        <span @click="prevImage" class="prev"> &#8249; </span>
-        <span @click="nextImage" class="next"> &#8250; </span>
-      </div>
+      <!-- <div class="actions"> -->
+      <div @click="prevImage" class="control prev">&#8249;</div>
+      <div @click="nextImage" class="control next">&#8250;</div>
+      <!-- </div> -->
     </div>
     <div class="thumbnails">
       <div
@@ -62,15 +31,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-
-import Img1 from "@/assets/images/p1.jpg";
-import ImgThumb1 from "@/assets/images/thumbs/p1.jpg";
-import Img2 from "@/assets/images/p2.jpg";
-import ImgThumb2 from "@/assets/images/thumbs/p2.jpg";
-import Img3 from "@/assets/images/p3.jpg";
-import ImgThumb3 from "@/assets/images/thumbs/p3.jpg";
-import Img4 from "@/assets/images/p4.avif";
-import ImgThumb4 from "@/assets/images/thumbs/p4.jpg";
 
 /* Start conditions */
 const startingImage = 0;
@@ -90,25 +50,47 @@ const countdownInterval = ref(10);
 const images = [
   {
     id: "1",
-    big: Img1,
-    thumb: ImgThumb1,
+    big: "/images/p1.jpg",
+    thumb: "/images/thumbs/p1.jpg",
   },
   {
     id: "2",
-    big: Img2,
-    thumb: ImgThumb2,
+    big: "/images/p2.jpg",
+    thumb: "/images/thumbs/p2.jpg",
   },
   {
     id: "3",
-    big: Img3,
-    thumb: ImgThumb3,
+    big: "/images/p3.jpg",
+    thumb: "/images/thumbs/p3.jpg",
   },
   {
     id: "4",
-    big: Img4,
-    thumb: ImgThumb4,
+    big: "/images/p4.avif",
+    thumb: "/images/thumbs/p4.jpg",
+  },
+  {
+    id: "5",
+    big: "/images/p1.jpg",
+    thumb: "/images/thumbs/p1.jpg",
+  },
+  {
+    id: "6",
+    big: "/images/p2.jpg",
+    thumb: "/images/thumbs/p2.jpg",
+  },
+  {
+    id: "7",
+    big: "/images/p3.jpg",
+    thumb: "/images/thumbs/p3.jpg",
+  },
+  {
+    id: "8",
+    big: "/images/p4.avif",
+    thumb: "/images/thumbs/p4.jpg",
   },
 ];
+
+const image = document.querySelector(".card-img-image") as HTMLImageElement;
 
 const currentImage = computed(() => images[activeImage.value].big);
 
@@ -191,6 +173,15 @@ onMounted(() => {
   position: relative;
 }
 
+.image-wrapper {
+  margin: 0 auto;
+  width: 70%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .progressbar {
   display: block;
   width: 100%;
@@ -208,7 +199,6 @@ onMounted(() => {
 .thumbnails {
   display: flex;
   justify-content: space-evenly;
-  flex-direction: row;
 }
 
 .thumbnail-image {
@@ -233,6 +223,7 @@ onMounted(() => {
 
 .card-img {
   position: relative;
+  width: auto;
   margin-bottom: 15px;
 }
 
@@ -244,33 +235,46 @@ onMounted(() => {
   object-fit: contain;
 }
 
-.actions {
+/* .actions {
   font-size: 1.5em;
   height: 40px;
   position: absolute;
   top: 50%;
-  margin-top: -20px;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: #585858;
-}
+} */
 
-.actions > span {
+.control {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  line-height: 0;
+  color: white;
+  background-color: blue;
+  border-radius: 50%;
+  transform: translateY(calc(50% - 1.5em / 2));
   cursor: pointer;
   transition: all 250ms;
 }
 
-.actions > span.prev {
+.control.prev {
   margin-left: 5px;
+  left: 0;
 }
 
-.actions > span.next {
+.control.next {
   margin-right: 5px;
+  right: 0;
 }
 
-.actions > span:hover {
+.control:hover {
   color: #eee;
 }
 </style>
